@@ -1,9 +1,18 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 app_name = 'users'
 
 urlpatterns = [
+    # Default django urls
+    path('auth/', include('django.contrib.auth.urls')),
+
+    # Home page
+    path('', views.index, name='index'),
+
+    # Search
+    path('search/', views.search, name='search'),
+
     # clients list
     path('clients/', views.client_list, name='client_list'),
 
@@ -21,4 +30,7 @@ urlpatterns = [
 
     # redeem referral points
     path('redeem_referral_points/<int:client_id>/', views.redeem_referral_points, name='redeem_referral_points'),
+
+    # redeem birthday point
+    path('redeem_birthday_points/<int:client_id>/', views.redeem_birthday_points, name='redeem_birthday_points'),
 ]

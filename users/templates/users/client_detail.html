@@ -7,14 +7,17 @@
     <title>{% block title %}Client Details | {% endblock title %}</title>
 </head>
 <body>
+{% load bootstrap4 %}
+
 {% block header %}
 <h5>Client Details</h5>
 {% endblock header %}
 
 {% block content %}
-<h1>{{ client.first_name }} {{ client.second_name }}</h1>
+<h4>{{ client.first_name }} {{ client.second_name }}</h1>
 <p>Email: {{ client.email }}</p>
 <p>Phone: {{ client.phone }}</p>
+<p>Date of Birth: {{ client.date_of_birth }}</p>
 <p>Points: {{ client.points }}</p>
 <p>Referral Points: {{ client.referral_points }}</p>
 <p>Card Paid: {{ client.card_paid }}</p>
@@ -22,6 +25,7 @@
 <a href="{% url 'users:visit' client.id %}">Add Visit</a><br>
 <a href="{% url 'users:redeem_points' client.id %}">Redeem Points</a><br>
 <a href="{% url 'users:redeem_referral_points' client.id %}">Redeem Referral Points</a><br>
+<a href="{% url 'users:redeem_birthday_points' client.id %}">Redeem Birthday Points</a><br>
 <a href="{% url 'users:client_list' %}">Back to Client List</a>
 {% endblock content %}
 

@@ -7,6 +7,8 @@
     <title>{% block title %}Register | {% endblock title %}</title>
 </head>
 <body>
+{% load bootstrap4 %}
+
 {% block header %}
 <h5>Register Client</h5>
 {% endblock header %}
@@ -21,6 +23,7 @@
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required><br>
     <label for="phone">Phone:</label>
+    <label for="date_of_birth">Date of Birth:</label>
     <input type="text" id="phone" name="phone" required><br>
     <label for="referred_by">Referred by:</label>
     <select id="referred_by" name="referred_by">

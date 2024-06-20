@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 class Client(models.Model):
     first_name = models.CharField(max_length=100)
@@ -7,6 +8,8 @@ class Client(models.Model):
     phone = models.CharField(max_length=15, unique=True)
     points = models.IntegerField(default=0)
     referral_points = models.IntegerField(default=0)
+    date_of_birth = models.DateField(null=True, blank=True)
+    birthday_points = models.IntegerField(default=0)
     referred_by = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
     card_paid = models.BooleanField(default=False)
     card_issued = models.BooleanField(default=False)
@@ -22,6 +25,16 @@ class Client(models.Model):
     def redeem_referral_points(self):
         if self.referral_points >= 3:
             self.referral_points -= 3
+            self.save()
+
+    def add_birthday_points(self):
+        if self.date_of_birth and self.date_of_birth.month == date.today().month and self.date_of_birth.day == date.today().day:
+            self.birthday_points += 5
+            self.save()
+
+    def redeem_birthday_points(self):
+        if self.birthday_points >= 5:
+            self.birthday_points -= 5
             self.save()
 
 
