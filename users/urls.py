@@ -33,4 +33,7 @@ urlpatterns = [
 
     # redeem birthday point
     path('redeem_birthday_points/<int:client_id>/', views.redeem_birthday_points, name='redeem_birthday_points'),
+
+    # daily visits
+    path('daily_visits/', views.daily_visits, name='daily_visits'),
 ]

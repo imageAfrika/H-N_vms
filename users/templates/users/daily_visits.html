@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'users/base.html' %}
+    {% load bootstrap4 %}
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Daily visits | {% endblock title %}</title>
+</head>
+<body>
+
+{% block header %}
+    <h5>Visits</h5>
+{% endblock header %}
+
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>Client Name</th>
+            <th>Visit Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for visit in visits_today %}
+            <tr>
+                <td>{{ visit.client.first_name }} {{ visit.client.second_name }}</td>
+                <td>{{ visit.visit_time }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'users:client_list' %}">Back to Client List</a>
+{% endblock content %}
+    
+</body>
+</html>

@@ -3,6 +3,8 @@ from .models import Client, Referral
 from visits.models import Visit
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.utils import timezone
+from django.db.models import Count
 
 def index(request):
     """Home page"""
@@ -15,6 +17,15 @@ def visit(request, client_id):
     client = Client.objects.get(id=client_id)
     Visit(client=client).save()
     return redirect('users:client_detail', client_id=client.id)
+
+def daily_visits(request):
+    """Daily visits"""
+    today = timezone.now().date()
+    
+    # Filter visits for today
+    visits_today = Visit.objects.filter(visit_time__date=today).select_related('client')
+    context = {'visits_today': visits_today, 'today': today}
+    return render(request, 'users/daily_visits.html', context)
 
 @login_required
 def redeem_points(request, client_id):
@@ -31,6 +42,7 @@ def redeem_referral_points(request, client_id):
     return redirect('users:client_detail', client_id=client.id)
 
 def redeem_birthday_points(request, client_id):
+    """Redeem birthday points"""
     client = Client.objects.get(id=client_id)
     client.redeem_birthday_points()
     return redirect('users:client_detail', client_id=client.id)
@@ -88,10 +100,10 @@ def register_client(request):
 
 @login_required
 def search(request):
-    """Search for items"""
+    """Search for client"""
     query = request.GET.get('query', '')
-    clients = Client.objects.filter(Q(name__icontains=query))
+    clients = Client.objects.filter(Q(first_name__icontains=query))
     search_count = clients.count()
 
     context = {'clients': clients, 'query': query, 'search_count': search_count}
-    return render(request, 'products/search.html', context)
+    return render(request, 'users/search.html', context)
