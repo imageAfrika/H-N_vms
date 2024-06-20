@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'users/base.html' %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Clients | {% endblock title %}</title>
+</head>
+<body>
+{% block header %}
+<h5>Clients</h5>
+{% endblock header %}
+
+{% block content %}
+<h1>Clients</h1>
+<ul>
+    {% for client in clients %}
+        <li>
+            <a href="{% url 'users:client_detail' client.id %}">{{ client.first_name }} {{ client.second_name }}</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'users:register_client' %}">Register New Client</a>
+{% endblock content %}
+
+</body>
+</html>

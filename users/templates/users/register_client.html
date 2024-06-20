@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'users/base.html' %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Register | {% endblock title %}</title>
+</head>
+<body>
+{% block header %}
+<h5>Register Client</h5>
+{% endblock header %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" required><br>
+    <label for="second_name">Second Name:</label>
+    <input type="text" id="second_name" name="second_name" required><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phone" required><br>
+    <label for="referred_by">Referred by:</label>
+    <select id="referred_by" name="referred_by">
+        <option value="">Select a client</option>
+        {% for client in clients %}
+            <option value="{{ client.id }}">{{ client.first_name }} {{ client.second_name }}</option>
+        {% endfor %}
+    </select><br>
+    <label for="card_paid">Card Paid:</label>
+    <input type="checkbox" id="card_paid" name="card_paid"><br>
+    <label for="card_issued">Card Issued:</label>
+    <input type="checkbox" id="card_issued" name="card_issued"><br>
+    <button type="submit">Register</button>
+</form>
+{% endblock content %}
+
+</body>
+</html>
