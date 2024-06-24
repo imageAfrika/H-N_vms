@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% extends 'users/base.html' %}
+    <title>{% block title %}Edit | {% endblock title %}</title>
+</head>
+<body>
+    {% load bootstrap4 %}
+
+    {% block header %}
+    <h5>Edit Order for {{ order.client.first_name }} {{ order.client.second_name }}</h5>
+    {% endblock header %}
+    
+    {% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Service</button>
+    </form>
+    <h2>Current Services</h2>
+    <ul>
+        {% for item in order.orderitem_set.all %}
+            <li>
+                {{ item.service.name }} - {{ item.quantity }}
+                <a href="{% url 'services:delete_order_item' order.id item.id %}">Remove</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Total: {{ order.total }}</p>
+    <a href="{% url 'services:proceed_to_payment' order.id %}">Proceed to Payment</a>
+    {% endblock content %}
+</body>
+</html>

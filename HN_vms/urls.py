@@ -8,4 +8,7 @@ urlpatterns = [
 
     # urlpatterns for users
     path('users/', include('users.urls')),
+
+    # urlpatterns for services
+    path('services/', include('services.urls')),
 ]

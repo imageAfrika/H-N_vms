@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% extends 'users/base.html' %}
+    <title>{% block title %}Details | {% endblock title %}</title>
+</head>
+<body>
+    {% load bootstrap4 %}
+
+    {% block header %}
+    <h5>Order Detail for {{ order.client.first_name }} {{ order.client.second_name }}</h5>
+    {% endblock header %}
+    
+    {% block content %}
+    <h6>Order Information</h6>
+    <p><strong>Order ID:</strong> {{ order.id }}</p>
+    <p><strong>Created At:</strong> {{ order.created_at }}</p>
+    <p><strong>Status:</strong> {{ order.status }}</p>
+
+    <h2>Services</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Service Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.orderitem_set.all %}
+                <tr>
+                    <td>{{ item.service.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.service.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><strong>Total:</strong> {{ order.total }}</p>
+
+    <h2>Payments</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Payment Method</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in order.payment_set.all %}
+                <tr>
+                    <td>{{ payment.method }}</td>
+                    <td>{{ payment.amount }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="button" href="{% url 'services:edit_order' order.id %}">Edit Order</a>
+    {% if order.status != 'completed' %}
+        <a class="button" href="{% url 'services:proceed_to_payment' order.id %}">Proceed to Payment</a>
+    {% endif %}
+    {% endblock content %}
+</body>
+</html>

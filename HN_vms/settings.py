@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # My Apps
     'users',
     'visits',
+    'services',
 
     # 3rd Party Apps
     'bootstrap4',
@@ -126,3 +127,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# My Settings
+LOGIN_URL = 'users:login'

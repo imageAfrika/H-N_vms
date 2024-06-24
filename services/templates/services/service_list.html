@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% extends 'users/base.html' %}
+    <title>{% block title %}Services | {% endblock title %}</title>
+</head>
+<body>
+{% load bootstrap4 %}
+
+{% block header %}
+<h5>Services</h5>
+{% endblock header %}
+
+{% block content %}
+    <a href="{% url 'services:add_service' %}">Add Service</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in services %}
+                <tr>
+                    <td>{{ service.name }}</td>
+                    <td>Ksh.{{ service.price }}</td>
+                    <td>
+                        <a href="{% url 'services:edit_service' service.id %}">Edit</a>
+                        <a href="{% url 'services:delete_service' service.id %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
+</body>
+</html>

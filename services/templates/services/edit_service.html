@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% extends 'users/base.html' %}
+    <title>{% block title %}Edit | {% endblock title %}</title>
+</head>
+<body>
+    {% load bootstrap4 %}
+
+    {% block header %}
+    <h5>Edit service</h5>
+    {% endblock header %}
+    
+    {% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="{% url 'services:service_list' %}">Back to Service List</a>
+    {% endblock content %}
+</body>
+</html>

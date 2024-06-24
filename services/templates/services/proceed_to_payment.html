@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% extends 'users/base.html' %}
+    <title>{% block title %}Pay | {% endblock title %}</title>
+</head>
+<body>
+    {% load bootstrap4 %}
+
+    {% block header %}
+    <h5>Proceed to Payment for Order {{ order.id }}</h5>
+    {% endblock header %}
+    
+    {% block content %}
+    <p>Total Amount: {{ order.total }}</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Confirm Payment</button>
+    </form>
+    <h5>Payments</h5>
+    <ul>
+        {% for payment in order.payment_set.all %}
+            <li>{{ payment.method }}: {{ payment.amount }}</li>
+        {% endfor %}
+    </ul>
+    {% endblock content %}
+</body>
+</html>
