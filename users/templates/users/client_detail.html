@@ -61,11 +61,11 @@
     </tr>
     <tr>
         <th>Referred By</th>
-        <td>{{ client.referred_by.first_name }} {{ client.referred_by.second_name }} (ID: {{ client.referred_by.member_id }})</td>
+        <td>{{ client.referred_by.first_name }} {{ client.referred_by.second_name }} (ID: {{ client.referred_by.id }})</td>
     </tr>
 </table>
 
-<a href="{% url 'users:visit' client.id %}">Add Visit</a><br>
+
 <a href="{% url 'users:redeem_points' client.id %}">Redeem Points</a><br>
 <a href="{% url 'users:redeem_referral_points' client.id %}">Redeem Referral Points</a><br>
 <a href="{% url 'users:redeem_birthday_points' client.id %}">Redeem Birthday Points</a><br>

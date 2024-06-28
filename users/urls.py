@@ -8,7 +8,7 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
 
     # Home page
-    path('', views.index, name='index'),
+    path('home/', views.index, name='index'),
 
     # Search
     path('search/', views.search, name='search'),

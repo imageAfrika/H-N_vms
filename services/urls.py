@@ -1,5 +1,5 @@
 from django.urls import path, include
-from users import views
+from . import views
 
 app_name = 'services'
 
