@@ -1,39 +1,23 @@
-:root{
-    --main-color:gold;
-    --background-color: black;
-    --background-secondary:silver;
-
-    /* theme-dark
-        --background-color: #333;
-        --main-color: #ffd700; /* Gold */
-        /* --background-secondary: #666; Dark grey */
-
-        /* theme-light  */
-        /* --background-color: white;
-        --main-color: gold;
-        --background-secondary: silver; */
-
-}
-
 *body{
     background-color: black;
 }
 .landing_page{
     display: flex;
     margin: 5px;
-    border: 1px solid gold;
+    border: 1px solid rgb(250, 249, 244);
     border-radius: 20px;
     padding: 20px;
-    width: 98%;
-    height: 90%;
+    width: 99vw;
+    height: 90vh;
+    background-color: white;
 }
 .nav_header{
     width: 15%;
-    height: 85vh;
+    height: 50vh;
     border: 1px solid silver;
-    background-color:rgb(44, 42, 42);
-    margin: 15px,15px;
-    border-radius: 10px 0px 0px 10px;
+    background-color:white;
+    margin: auto;
+    border-radius: 10px 10px 10px 10px;
 
 
 }
@@ -42,21 +26,22 @@
 }
 .upcoming_appointments li{
     list-style: none;
-    color: gold;
+    color: rgb(25, 216, 98);
 }
 .main_dashboard{
     width: 85%;
     /* height: 90vh; */
     border: 1px solid silver;
-    background-color:rgb(44, 42, 42);
+    background-color:white;
     margin-left: 0px;
-    border-radius:0px 10px 10px 0px ;
+    border-radius:10px 10px 10px 10px ;
+    margin: 10px;
 
 }
 .events_tab{
     width: 30%;
     height: 40%;
-    border: 1px solid gold;
+    border: 1px solid silver;
     margin: 50px;
     border-radius: 10px;
 }

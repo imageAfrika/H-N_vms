@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{% static 'HN_vms/css/index.css' %}">
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.js'></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.js'></script>
     
     <!-- Bootstrap stylings -->
     {% bootstrap_css %}
@@ -85,7 +87,7 @@
 </main>
 
 
-<script>
+<!-- <script>
   document.addEventListener('DOMContentLoaded', function() {
       var calendarEl = document.getElementById('calendar');
       var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -100,7 +102,7 @@
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            initialDate: '2023-04-01', // Set the initial date to April 1st, 2023
+            initialDate: '2024-04-01', // Set the initial date to April 1st, 2023
             editable: true, // Allows users to edit events
             selectable: true, // Enables users to click and drag to create new events
             events: [
@@ -110,7 +112,7 @@
                     start: '2023-04-05T09:00:00',
                     end: '2023-04-06T17:00:00',
                     allDay: true,
-                    backgroundColor: 'blue',
+                    backgroundColor: 'gold',
                     borderColor: 'transparent'
                 },
                 // More events...
@@ -119,7 +121,7 @@
         });
         calendar.render();
     });
-    </script>
+    </script> -->
 
 </body>
 </html>

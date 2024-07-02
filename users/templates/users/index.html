@@ -23,17 +23,31 @@
     {% block content %}
     <div class="landing_page">
         <div class="nav_header">
-            <div class="upcoming_appointments">
-                <ul>
-                    <li>client list</li>
-                    <li></li>
-                    <li>Help</li>
-                </ul>
-        </div>
+                <div class="upcoming_appointments">
+                    <ul>
+                        <li>client list</li>
+                        <li></li>
+                        <li>Help</li>
+                    </ul>
+                </div>
         </div>
         <div class="main_dashboard">
             <div class="events_tab">
-                <div id="calendar">
+                <div id='calendar'>
+
+
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                        var calendarEl = document.getElementById('calendar');
+                        var calendar = new FullCalendar.Calendar(calendarEl, {
+                            initialView: 'dayGridMonth',
+                            // Other configurations go here
+                        });
+                        calendar.render();
+                    });
+                    </script>
+                </div>
                     upcoming events
                 </div>
         </div>
@@ -50,3 +64,5 @@
     
 </body>
 </html>
+
+
