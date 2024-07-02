@@ -16,4 +16,9 @@ urlpatterns = [
 
     # urlpatterns for services
     path('services/', include('services.urls')),
+    
+    
+
 ]
+
+

@@ -1,20 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Home | Users</title>
     {% extends 'users/base.html' %}
     {% load bootstrap4 %}
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Home | {% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'HN_vms/css/index.css' %}">
+    <style>
+        
+        </style>
 </head>
 <body>
+    {% block header %}
 
-{% block header %}
-{% endblock header %}
+    {% endblock header %}
 
-{% block content %}
+    {% block content %}
+    <div class="landing_page">
+        <div class="nav_header">
+            <div class="upcoming_appointments">
+                <ul>
+                    <li>client list</li>
+                    <li></li>
+                    <li>Help</li>
+                </ul>
+        </div>
+        </div>
+        <div class="main_dashboard">
+            <div class="events_tab">
+                <div id="calendar">
+                    upcoming events
+                </div>
+        </div>
+            <div class="calender_schedule">
+                <!-- Calendar schedule content -->
+        </div>
+            <div class="reports_tab">
+                <!-- Reports tab content -->
+        </div>
+        </div>
+    </div>
 {% endblock content %}
+
     
 </body>
 </html>

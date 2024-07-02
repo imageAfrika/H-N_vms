@@ -2,29 +2,40 @@
 <html lang="en">
 <head>
     {% extends 'users/base.html' %}
+    {% load static %} 
     <meta charset="UTF-8">
     <title>{% block title %}Login | {% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'HN_vms/css/login.css' %}">
 </head>
 <body>
+
+  
     {% load bootstrap4 %}
 
     {% block header %}
-      <h5 class="text-center">Login here</h5>
+    <div class="login_header">
+      <h5 class="login_text">Please Log in to continue</h5>
+    </div>
+      
     {% endblock header %}
 
     {% block content %}
-        <div class="container">
+        <div class="login_container">
           <div class="row">
-            <div class="col-md-6 mx-auto">
-              <div class="Logo">
-                <img src="" alt=""> <!--Add Logo here-->
+            <!-- <div class="col-md-6 mx-auto"> -->
+              <div class="logo">
+                <img src="{% static 'HN_vms/images/HN_Logo.png' %}" alt=""> <!--Add Logo here-->
               </div>
-              <form action="{% url 'users:login' %}" method="post" class="form">
-                {% csrf_token %}
-                {% bootstrap_form form %}
-                <button class="btn btn-primary" name="submit">Login</button>
-                <input type="hidden" name="next" value="{% url 'users:index' %}">
-              </form>
+              <div class="auth_forms">
+                <form action="{% url 'users:login' %}" method="post" class="form">
+                  {% csrf_token %}
+                  {% bootstrap_form form %}
+                  <button class="btn btn-primary" name="submit">Login</button>
+                  <input type="hidden" name="next" value="{% url 'users:index' %}">
+                </form>
+              </div>
+              
             </div>
           </div>
         </div>

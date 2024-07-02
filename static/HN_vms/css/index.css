@@ -1,0 +1,125 @@
+:root{
+    --main-color:gold;
+    --background-color: black;
+    --background-secondary:silver;
+
+    /* theme-dark
+        --background-color: #333;
+        --main-color: #ffd700; /* Gold */
+        /* --background-secondary: #666; Dark grey */
+
+        /* theme-light  */
+        /* --background-color: white;
+        --main-color: gold;
+        --background-secondary: silver; */
+
+}
+
+*body{
+    background-color: black;
+}
+.landing_page{
+    display: flex;
+    margin: 5px;
+    border: 1px solid gold;
+    border-radius: 20px;
+    padding: 20px;
+    width: 98%;
+    height: 90%;
+}
+.nav_header{
+    width: 15%;
+    height: 85vh;
+    border: 1px solid silver;
+    background-color:rgb(44, 42, 42);
+    margin: 15px,15px;
+    border-radius: 10px 0px 0px 10px;
+
+
+}
+.upcoming_appointments ul{
+
+}
+.upcoming_appointments li{
+    list-style: none;
+    color: gold;
+}
+.main_dashboard{
+    width: 85%;
+    /* height: 90vh; */
+    border: 1px solid silver;
+    background-color:rgb(44, 42, 42);
+    margin-left: 0px;
+    border-radius:0px 10px 10px 0px ;
+
+}
+.events_tab{
+    width: 30%;
+    height: 40%;
+    border: 1px solid gold;
+    margin: 50px;
+    border-radius: 10px;
+}
+
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    width: 100%;
+    max-width: 600px; /* Adjust based on your preference */
+    margin: auto; /* Center the calendar */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Adds a subtle shadow */
+    border-radius: 8px; /* Rounded corners */
+    overflow: hidden; /* Ensures the shadow is contained */
+}
+
+.day {
+    border-top: 1px solid #eee; /* Separates each day */
+    padding: 10px;
+    text-align: center;
+    transition: background-color 0.3s; /* Smooth background color change */
+}
+
+/* Highlight today's date */
+.today {
+    background-color: #ffc107; /* Yellow */
+    color: white;
+}
+
+/* Hover effect for days */
+.day:hover {
+    background-color: #f0f0f0; /* Light gray */
+}
+
+/* Style for weekends */
+.day:nth-child(even) {
+    background-color: #f9f9f9; /* Slightly off-white for weekends */
+}
+
+/* Style for weekdays */
+.day:nth-child(odd) {
+    background-color: #ffffff; /* White for weekdays */
+}
+
+/* Optional: Add some padding around the calendar for better spacing */
+.calendar-container {
+    padding: 20px;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background-color: wheat;
+    color: gold;
+}
+.day {
+    border: 1px solid grey;
+    padding: 10px;
+    text-align: center;
+}
+.today {
+    background-color: silver;
+    color: white;
+}
