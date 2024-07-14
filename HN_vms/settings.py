@@ -36,9 +36,6 @@ INSTALLED_APPS = [
     'visits',
     'services',
 
-    # 3rd Party Apps
-    'bootstrap4',
-
     # Django default Apps
     'django.contrib.admin',
     'django.contrib.auth',

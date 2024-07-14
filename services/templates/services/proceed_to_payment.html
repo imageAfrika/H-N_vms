@@ -5,10 +5,8 @@
     <title>{% block title %}Pay | {% endblock title %}</title>
 </head>
 <body>
-    {% load bootstrap4 %}
-
     {% block header %}
-    <h5>Proceed to Payment for Order {{ order.id }}</h5>
+        <h5>Proceed to Payment for Order {{ order.id }}</h5>
     {% endblock header %}
     
     {% block content %}

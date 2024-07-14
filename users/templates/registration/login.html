@@ -6,27 +6,21 @@
     <title>{% block title %}Login | {% endblock title %}</title>
 </head>
 <body>
-    {% load bootstrap4 %}
-
     {% block header %}
       <h5 class="text-center">Login here</h5>
     {% endblock header %}
 
     {% block content %}
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6 mx-auto">
-              <div class="Logo">
-                <img src="" alt=""> <!--Add Logo here-->
-              </div>
-              <form action="{% url 'users:login' %}" method="post" class="form">
-                {% csrf_token %}
-                {% bootstrap_form form %}
-                <button class="btn btn-primary" name="submit">Login</button>
-                <input type="hidden" name="next" value="{% url 'users:index' %}">
-              </form>
-            </div>
+        <div>
+          <div class="Logo">
+            <img src="" alt=""> <!--Add Logo here-->
           </div>
+          <form action="{% url 'users:login' %}" method="post" class="form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button name="submit">Login</button>
+            <input type="hidden" name="next" value="{% url 'users:index' %}">
+          </form>
         </div>
     {% endblock content %}
 </body>

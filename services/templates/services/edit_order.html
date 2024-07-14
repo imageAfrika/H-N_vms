@@ -5,10 +5,8 @@
     <title>{% block title %}Edit | {% endblock title %}</title>
 </head>
 <body>
-    {% load bootstrap4 %}
-
     {% block header %}
-    <h5>Edit Order for {{ order.client.first_name }} {{ order.client.second_name }}</h5>
+        <h5>Edit Order for {{ order.client.first_name }} {{ order.client.second_name }}</h5>
     {% endblock header %}
     
     {% block content %}

@@ -7,32 +7,21 @@
     <title>{% block title %}Search | {% endblock title %}</title>
 </head>
 <body>
-{% load bootstrap4 %}
 
 {% block header %}
     <h5>Search Results | {{search_count}} found</h5>
 {% endblock header %}
     
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                {% for client in clients %}
-                  <div class="col-md-6 col-lg-4 mx-auto">
-                      <div class="card mb-3 mx-auto">
-                          <div class="card-body">
-                              <h5 class="font-weight-bold">{{ client.first_name }} {{ client.second_name }}</h5>
-                              <a href="{% url 'users:client_detail' client.id %}" >Client Details &raquo</a>
-                          </div>
-                      </div>
-                  </div>
-                {% empty %}
-                  <p class="lead">Client not found!</p>
-                {% endfor %}
-            </div>
+<div>
+    {% for client in clients %}
+        <div>
+            <h5>{{ client.first_name }} {{ client.second_name }}</h5>
+            <a href="{% url 'users:client_detail' client.id %}" >Client Details &raquo</a>
         </div>
-    </div>
+        {% empty %}
+            <p>Client not found!</p>
+    {% endfor %}
 </div> 
 {% endblock content %}
 

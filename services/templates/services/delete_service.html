@@ -5,16 +5,15 @@
     <title>{% block title %}Delete | {% endblock title %}</title>
 </head>
 <body>
-    {% load bootstrap4 %}
-
     {% block header %}
-    <h5>Delete service</h5>
+        <h5>Delete service</h5>
     {% endblock header %}
     
     {% block content %}
     <p>Are you sure you want to delete {{ service.name }}?</p>
     <form method="post">
         {% csrf_token %}
+        {{ form.as_p }}
         <button type="submit">Delete</button>
     </form>
     <a href="{% url 'services:service_list' %}">Back to Service List</a>

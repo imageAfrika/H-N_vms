@@ -1,5 +1,3 @@
-{% load bootstrap4 %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,40 +7,31 @@
     <title>{% block title %}{% endblock title %}H&N</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
-    <!-- Bootstrap stylings -->
-    {% bootstrap_css %}
-    {% bootstrap_javascript jquery='full' %}
-    <!-- End of Bootstrap stylings -->
 </head>
 
 <body>
-<nav class="navbar navbar-expand-md navbar-light bg-light border">
-    <i class="fa fa-google-wallet fa-2x mr-2"></i>
+<nav class="navbar">
+    <i class="fa fa-google-wallet fa-2x"></i>
 
-    <a style="font-family: 'Rubik',sans-serif;" class="navbar-brand" href="{% url 'users:index' %}">
+    <a href="{% url 'users:index' %}">
       H&N
     </a>
 
     <!-- Toggle button -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse"
-      data-target="#navbarCollapse" aria-controls="navbarCollapse"
-      aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button">
           <span class="navbar-toggler-icon"></span>
     </button>
     <!-- End of Toggle button -->
         
-    <div style="font-family: 'Rubik',sans-serif;" class="collapse navbar-collapse" id="navbarCollapse">
-
-        
+    <div>
         <!-- User authentication -->
-        <ul class="navbar-nav ml-auto">
+        <ul>
               <form action="{% url 'users:search' %}" method="get">
-                <li class="navbar-item mr-3 my-auto">
-                <div class="input-group">
-                  <input class="form-control" name="query" type="text" placeholder="Search">
-                  <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary">
+                <li>
+                <div>
+                  <input name="query" type="text" placeholder="Search">
+                  <div>
+                    <button type="submit">
                       <i class="fa fa-search"></i>
                     </button>
                   </div>
@@ -50,20 +39,20 @@
                </li>
               </form>
 
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'users:client_list' %}">Clients</a>
+              <li>
+                <a href="{% url 'users:client_list' %}">Clients</a>
               </li>
 
               {% if user.is_authenticated %}
-                <li class="nav-item">
-                  <span class="navbar-text">Hello, {{ user.username }}.</span>
+                <li>
+                  <span>Hello, {{ user.username }}.</span>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'users:logout' %}">Logout</i></a>
+                <li>
+                  <a href="{% url 'users:logout' %}">Logout</i></a>
                 </li>
               {% else %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'users:login' %}">Log in</a></li>
+                <li>
+                  <a href="{% url 'users:login' %}">Log in</a></li>
               {% endif %}
         </ul>
         <!-- End of User authentication -->
@@ -74,7 +63,7 @@
     <div>
       {% block header %}{% endblock header %}
     </div>
-    <div style="font-family: 'Rubik',sans-serif;">
+    <div>
         {% block content %}{% endblock content %}
     </div>
 </main>
