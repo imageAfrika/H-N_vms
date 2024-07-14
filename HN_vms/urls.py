@@ -8,7 +8,7 @@ urlpatterns = [
     # Default admin urls
     path('admin/', admin.site.urls),
     
-    # First page to open
+    # First page
     path('', RedirectView.as_view(url='/users/auth/login/', permanent=False)),
 
     # urlpatterns for users
