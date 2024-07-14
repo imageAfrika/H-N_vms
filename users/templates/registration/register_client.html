@@ -7,39 +7,83 @@
     <title>{% block title %}Register | {% endblock title %}</title>
 </head>
 <body>
-{% load bootstrap4 %}
 
-{% block header %}
-<h5>Register Client</h5>
-{% endblock header %}
 
-{% block content %}
-<form method="post">
-    {% csrf_token %}
-    <label for="first_name">First Name:</label>
-    <input type="text" id="first_name" name="first_name" required><br>
-    <label for="second_name">Second Name:</label>
-    <input type="text" id="second_name" name="second_name" required><br>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" ><br>
-    <label for="phone">Phone:</label>
-    <input type="text" id="phone" name="phone" ><br>
-    <label for="date_of_birth">Date of Birth:</label>
-    <input type="date" id="date_of_birth" name="date_of_birth" required><br>
-    <label for="referred_by">Referred by:</label>
-    <select id="referred_by" name="referred_by">
-        <option value="">Select a client</option>
-        {% for client in clients %}
-            <option value="{{ client.id }}">{{ client.first_name }} {{ client.second_name }}</option>
-        {% endfor %}
-    </select><br>
-    <label for="card_paid">Card Paid:</label>
-    <input type="checkbox" id="card_paid" name="card_paid"><br>
-    <label for="card_issued">Card Issued:</label>
-    <input type="checkbox" id="card_issued" name="card_issued"><br>
-    <button type="submit">Register</button>
-</form>
-{% endblock content %}
+        <!-- {% load bootstrap4 %} -->
+
+        {% block header %}
+        <div class="heading"><h5>Register Client</h5></div>
+        {% endblock header %}
+
+        {% block content %}
+        <div class="clientRegistration"></div>
+            <form method="post">
+            {% csrf_token %}
+
+
+
+
+
+        
+            <div class="registration_details">
+                <div class="client_details">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" placeholder="Enter your first name" name="first_name" required>
+                </div>
+                <div class="client_details">
+                    <label for="second_name">Second Name:</label>
+                    <input type="text" id="second_name" name="second_name" required>
+                </div>
+                <div class="client_details">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="client_details">
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" name="phone">
+                </div>
+                <div class="client_details">
+                    <label for="date_of_birth">Date of Birth:</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" required>
+                </div>
+                <div class="client_details">
+                    <label for="referred_by">Referred by:</label>
+                    <select id="referred_by" name="referred_by">
+                        <option value="">Select a client</option>
+                        {% for client in clients %}
+                            <option value="{{ client.id }}">{{ client.first_name }} {{ client.second_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                
+                <label for="card_paid">Card Paid:</label>
+                <input type="checkbox" id="card_paid" name="card_paid"><br>
+                <label for="card_issued">Card Issued:</label>
+                <input type="checkbox" id="card_issued" name="card_issued"><br>
+                <button class="submission" type="submit">Register</button>
+            </div>
+        
+        </form>
+    </div>
+        {% endblock content %}
+   
+    </div>
+
+
+
+    
+
+    
+    
+
+
+
+
+
+
+
+
 
 </body>
 </html>
