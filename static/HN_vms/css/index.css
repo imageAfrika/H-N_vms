@@ -1,5 +1,5 @@
-*body{
-    background-color: black;
+body{
+    background-color: #ffffff;
 }
 .landing_page{
     display: flex;
@@ -9,13 +9,14 @@
     padding: 20px;
     width: 99vw;
     height: 90vh;
-    background-color: white;
+    background-color: #ffffff;
+    color: rgb(15, 11, 11);
 }
 .nav_header{
     width: 15%;
     height: 50vh;
-    border: 1px solid silver;
-    background-color:white;
+    border: 1px solid rgb(216, 16, 16);
+    background-color:rgb(137, 25, 25)36, 28, 28;
     margin: auto;
     border-radius: 10px 10px 10px 10px;
 
@@ -26,13 +27,13 @@
 }
 .upcoming_appointments li{
     list-style: none;
-    color: rgb(25, 216, 98);
+    color: silver;
 }
 .main_dashboard{
     width: 85%;
     /* height: 90vh; */
     border: 1px solid silver;
-    background-color:white;
+    background-color:#ffffff;
     margin-left: 0px;
     border-radius:10px 10px 10px 10px ;
     margin: 10px;

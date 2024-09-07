@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Search | {% endblock title %}</title>
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/search.css' %}">
 </head>
 <body>
-{% load bootstrap4 %}
+
 
 {% block header %}
     <h5>Search Results | {{search_count}} found</h5>
@@ -19,16 +21,16 @@
         <div class="col-md-12">
             <div class="row">
                 {% for client in clients %}
-                  <div class="col-md-6 col-lg-4 mx-auto">
-                      <div class="card mb-3 mx-auto">
-                          <div class="card-body">
-                              <h5 class="font-weight-bold">{{ client.first_name }} {{ client.second_name }}</h5>
-                              <a href="{% url 'users:client_detail' client.id %}" >Client Details &raquo</a>
-                          </div>
-                      </div>
-                  </div>
+                <div class="col-md-6 col-lg-4 mx-auto">
+                <div class="card mb-3 mx-auto">
+                    <div class="card-body">
+                        <h5 class="font-weight-bold">{{ client.first_name }} {{ client.second_name }}</h5>
+                        <a href="{% url 'users:client_detail' client.id %}" >Client Details &raquo</a>
+                    </div>
+                </div>
+                </div>
                 {% empty %}
-                  <p class="lead">Client not found!</p>
+                <p class="lead">Client not found!</p>
                 {% endfor %}
             </div>
         </div>
