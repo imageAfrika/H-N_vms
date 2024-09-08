@@ -9,15 +9,33 @@
     <title>{% block title %}{% endblock title %}H&N</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    
+    
+                <!-- PAGE STYLING -->
     <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'HN_vms/css/login.css' %}">
     <link rel="stylesheet" href="{% static 'HN_vms/css/index.css' %}">
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="{% static 'HN_vms/css/register_client.css' %}">
+    <!-- Inside the <head> tag of base.html -->
+    <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
+
+
+                <!-- OTHER STYLING -->
+
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css'>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.js'></script>
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.js'></script>
+<<<<<<< HEAD
     
 
+=======
+    <!-- Bootstrap stylings -->
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    <!-- End of Bootstrap stylings -->
+>>>>>>> 9c75cf918a8d11a6d86766f04aa5a442974bdf76
 </head>
 
 <body>
