@@ -11,6 +11,7 @@
     <title>{% block title %}Home | {% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'HN_vms/css/index.css' %}">
+    
     <style>
         
         </style>
@@ -21,44 +22,41 @@
     {% endblock header %}
 
     {% block content %}
-    <div class="landing_page">
-        <div class="nav_header">
-                <div class="upcoming_appointments">
-                    <ul>
-                        <li>client list</li>
-                        <li></li>
-                        <li>Help</li>
-                    </ul>
-                </div>
-        </div>
-        <di v class="main_dashboard">
-            <div class="events_tab">
-                <div id='calendar'>
+    <!--Preloader--> 
+<div class="preloader">
+    <div class="loader"></div>
+</div>
+<!--Preloader End-->
 
-
-
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                        var calendarEl = document.getElementById('calendar');
-                        var calendar = new FullCalendar.Calendar(calendarEl, {
-                            initialView: 'dayGridMonth',
-                            // Other configurations go here
-                        });
-                        calendar.render();
-                    });
-                    </script>
-                </div>
-                    upcoming events
-                </div>
-        </di>
-            <div class="calender_schedule">
-                <!-- Calendar schedule content -->
+<div class="dashboard-container"> 
+    <div class="client-dashboard">
+        <div class="client-view">
+            <a class="nav-link" href="#">All Clients</a>
         </div>
-            <div class="reports_tab">
-                <!-- Reports tab content -->
-        </div>
-        </div>
+        <div class="client-add"></div>
+        <div class="employee-stats"></div>
     </div>
+    <div class="dashboard-informatics">
+        informatics
+    </div>
+    <div class="calender-scheduler">
+            <iframe src="https://calendar.google.com/calendar/embed?src=mail.jamesotieno%40gmail.com&ctz=Africa%2FNairobi" style="border: 0" width="200" height="300" frameborder="0" scrolling="no"></iframe>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+    
 {% endblock content %}
 
     

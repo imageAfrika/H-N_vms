@@ -4,7 +4,10 @@
     {% extends 'users/base.html' %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Client Details | {% endblock title %}</title>
+    <title>{% block title %}
+        Client Details
+        
+        | {% endblock title %}</title>
 </head>
 <body>
 
@@ -14,81 +17,96 @@
 {% endblock header %}
 
 {% block content %}
-<table>
-    <tr>
-        <th>Client ID</th>
-        <td>{{ client.id }}</td>
-    </tr>
-    <tr>
-        <th>First Name</th>
-        <td>{{ client.first_name }}</td>
-    </tr>
-    <tr>
-        <th>Second Name</th>
-        <td>{{ client.second_name }}</td>
-    </tr>
-    <tr>
-        <th>Email</th>
-        <td>{{ client.email }}</td>
-    </tr>
-    <tr>
-        <th>Phone</th>
-        <td>{{ client.phone }}</td>
-    </tr>
-    <tr>
-        <th>Date of Birth</th>
-        <td>{{ client.date_of_birth }}</td>
-    </tr>
-    <tr>
-        <th>Points</th>
-        <td>{{ client.points }}</td>
-    </tr>
-    <tr>
-        <th>Referral Points</th>
-        <td>{{ client.referral_points }}</td>
-    </tr>
-    <tr>
-        <th>Birthday Points</th>
-        <td>{{ client.birthday_points }}</td>
-    </tr>
-    <tr>
-        <th>Card Paid</th>
-        <td>{{ client.card_paid }}</td>
-    </tr>
-    <tr>
-        <th>Card Issued</th>
-        <td>{{ client.card_issued }}</td>
-    </tr>
-    <tr>
-        <th>Referred By</th>
-        <td>{{ client.referred_by.first_name }} {{ client.referred_by.second_name }} (ID: {{ client.referred_by.id }})</td>
-    </tr>
-</table>
-
-
-<a href="{% url 'users:redeem_points' client.id %}">Redeem Points</a><br>
-<a href="{% url 'users:redeem_referral_points' client.id %}">Redeem Referral Points</a><br>
-<a href="{% url 'users:redeem_birthday_points' client.id %}">Redeem Birthday Points</a><br>
-<a href="{% url 'users:client_list' %}">Back to Client List</a> <br/>
-<a class="button" href="{% url 'services:create_order' client.id %}">Select services</a>
-
-<h5>Last 5 Visits</h5>
-    <table>
-        <thead>
-            <tr>
-                <th>Visit Date</th>
-                <th>Visit Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for visit in visits %}
-                <tr>
-                    <td>{{ visit.visit_time.date }}</td>
-                    <td>{{ visit.visit_time.time }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
+<div class="container">
+    <table class="client-table">
+        <tr>
+            <th>Client ID</th>
+            <td>{{ client.id }}</td>
+        </tr>
+        <tr>
+            <th>First Name</th>
+            <td>{{ client.first_name }}</td>
+        </tr>
+        <tr>
+            <th>Second Name</th>
+            <td>{{ client.second_name }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ client.email }}</td>
+        </tr>
+        <tr>
+            <th>Phone</th>
+            <td>{{ client.phone }}</td>
+        </tr>
+        <tr>
+            <th>Date of Birth</th>
+            <td>{{ client.date_of_birth }}</td>
+        </tr>
+        <tr>
+            <th>Points</th>
+            <td>{{ client.points }}</td>
+        </tr>
+        <tr>
+            <th>Referral Points</th>
+            <td>{{ client.referral_points }}</td>
+        </tr>
+        <tr>
+            <th>Birthday Points</th>
+            <td>{{ client.birthday_points }}</td>
+        </tr>
+        <tr>
+            <th>Card Paid</th>
+            <td>{{ client.card_paid }}</td>
+        </tr>
+        <tr>
+            <th>Card Issued</th>
+            <td>{{ client.card_issued }}</td>
+        </tr>
+        <tr>
+            <th>Referred By</th>
+            <td>{{ client.referred_by.first_name }} {{ client.referred_by.second_name }} (ID: {{ client.referred_by.id }})</td>
+        </tr>
     </table>
+</div>
+
+<!-- <div class="client-actions">
+    <a href="{% url 'users:redeem_points' client.id %}">Redeem Points</a><br>
+    <a href="{% url 'users:redeem_referral_points' client.id %}">Redeem Referral Points</a><br>
+    <a href="{% url 'users:redeem_birthday_points' client.id %}">Redeem Birthday Points</a><br>
+    <a href="{% url 'users:client_list' %}">Back to Client List</a> <br/>
+    <a class="button" href="{% url 'services:create_order' client.id %}">Select services</a>
+</div> -->
+
+
+<div class="client-actions d-flex flex-wrap justify-content-center mb-4">
+    <a href="{% url 'users:redeem_points' client.id %}" class="btn btn-sm btn-outline-primary custom-margin">Redeem Points</a>
+    <a href="{% url 'users:redeem_referral_points' client.id %}" class="btn btn-sm btn-outline-secondary custom-margin">Redeem Referral Points</a>
+    <a href="{% url 'users:redeem_birthday_points' client.id %}" class="btn btn-sm btn-outline-success custom-margin">Redeem Birthday Points</a>
+    <a href="{% url 'users:client_list' %}" class="btn btn-sm btn-outline-info custom-margin">Back to Client List</a>
+    <a href="{% url 'services:create_order' client.id %}" class="btn btn-sm btn-primary custom-margin">Select services</a>
+</div>
+
+
+<div class="log-container">
+    <span>Last 5 Visits</span>
+        <table class="time-table">
+            <thead>
+                <tr>
+                    <th>Visit Date</th>
+                    <th>Visit Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for visit in visits %}
+                    <tr>
+                        <td>{{ visit.visit_time.date }}</td>
+                        <td>{{ visit.visit_time.time }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
 {% endblock content %}
 
 </body>

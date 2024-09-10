@@ -15,6 +15,34 @@
 
 {% block content %}
 <h1>Clients</h1>
+
+
+<table class="time-table">
+    <thead>
+        <tr>
+            <th>Client Name</th>
+            <th>client Phone</th>
+            <th>client Registration Status</th>
+            <th>client Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for visit in visits %}
+            <tr>
+                <td>{{ visit.visit_time.date }}</td>
+                <td>{{ visit.visit_time.time }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
 <ul>
     {% for client in clients %}
         <li>

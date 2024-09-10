@@ -7,6 +7,7 @@
     <title>{% block title %}Login | {% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'HN_vms/css/login.css' %}">
+
 </head>
 <body>
 
@@ -21,35 +22,37 @@
     {% endblock header %}
 
     {% block content %}
-        <div class="login_container">
-          <div class="row">
-            <!-- <div class="col-md-6 mx-auto"> -->
-              <div class="logo">
-                <img src="{% static 'HN_vms/images/HN_Logo.png' %}" alt=""> <!--Add Logo here-->
-              </div>
-              <div class="auth_forms">
-                <form action="{% url 'users:login' %}" method="post" class="form">
-                  {% csrf_token %}
-                  <div class="form-group">
-                      {{ form.username.label_tag }} {{ form.username }}
-                      {% if form.username.errors %}
-                          <span class="error">{{ form.username.errors }}</span>
-                      {% endif %}
-                  </div>
-                  <div class="form-group">
-                      {{ form.password.label_tag }} {{ form.password }}
-                      {% if form.password.errors %}
-                          <span class="error">{{ form.password.errors }}</span>
-                      {% endif %}
-                  </div>
-                  <button class="btn btn-primary" name="submit">Login</button>
-                  <input type="hidden" name="next" value="{% url 'users:index' %}">
-                </form>
-              </div>
+    <div class="login-container">
+      <div class="row">
+        <div class="column">
+          <div class="logo">
+            <img src="{% static 'HN_vms/images/HN_Logo.png' %}" alt="HN Logo" class="logo-image">
+          </div>
+          <div class="auth-forms">
+            <form action="{% url 'users:login' %}" method="post" class="login-form">
+              {% csrf_token %}
+              {{ form.non_field_errors }}
               
-            </div>
+              {% for field in form %}
+                <div class="form-group">
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                  
+                  {% if field.errors %}
+                    <span class="error">{{ field.errors }}</span>
+                  {% endif %}
+                </div>
+              {% endfor %}
+              
+              <button type="submit" class="login-button">Login</button>
+              <input type="hidden" name="next" value="{% url 'users:index' %}">
+            </form>
           </div>
         </div>
+      </div>
+    </div>
+    
+    
     {% endblock content %}
 </body>
 </html>

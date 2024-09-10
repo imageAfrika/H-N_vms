@@ -112,3 +112,11 @@ def search(request):
     context = {'clients': clients, 'query': query, 'search_count': search_count}
     return render(request, 'users/search.html', context)
 
+
+#Log out
+from django.contrib.auth import logout
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return render(request, 'registration/logged_out.html')  # Redirect to login page after logout

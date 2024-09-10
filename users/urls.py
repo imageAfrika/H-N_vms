@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from .views import logout_view
 
 app_name = 'users'
 
@@ -36,4 +37,7 @@ urlpatterns = [
 
     # daily visits
     path('daily_visits/', views.daily_visits, name='daily_visits'),
+
+    #Log out
+    path('logout/', logout_view, name='logout'),
 ]

@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import date
+from django.utils import timezone
 
 class Client(models.Model):
     first_name = models.CharField(max_length=100)
