@@ -1,0 +1,136 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Create Reminder{% endblock page_title %}
+
+{% block content %}
+<div class="form-container">
+    <form method="post" class="reminder-form">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h3>Reminder Details</h3>
+            <div class="form-group">
+                <label for="{{ form.appointment.id_for_label }}">Appointment *</label>
+                {{ form.appointment }}
+                {% if form.appointment.errors %}
+                    <div class="error">{{ form.appointment.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.reminder_type.id_for_label }}">Reminder Type *</label>
+                    {{ form.reminder_type }}
+                    {% if form.reminder_type.errors %}
+                        <div class="error">{{ form.reminder_type.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.remind_before.id_for_label }}">Remind Before *</label>
+                    {{ form.remind_before }}
+                    {% if form.remind_before.errors %}
+                        <div class="error">{{ form.remind_before.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Reminder</button>
+            <a href="{% url 'scheduler:reminder_list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.reminder-form {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+</style>
+{% endblock content %}

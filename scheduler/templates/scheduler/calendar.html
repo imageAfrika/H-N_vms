@@ -1,0 +1,242 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Calendar - {{ month_name }}{% endblock page_title %}
+
+{% block content %}
+<div class="calendar-container">
+    <!-- Calendar Navigation -->
+    <div class="calendar-header">
+        <a href="{% url 'scheduler:calendar_month' prev_month.year prev_month.month %}" class="btn btn-secondary">
+            <i data-lucide="chevron-left"></i> Previous
+        </a>
+        <h2>{{ month_name }}</h2>
+        <a href="{% url 'scheduler:calendar_month' next_month.year next_month.month %}" class="btn btn-secondary">
+            Next <i data-lucide="chevron-right"></i>
+        </a>
+    </div>
+    
+    <!-- Calendar Grid -->
+    <div class="calendar-grid">
+        <!-- Day Headers -->
+        <div class="calendar-day-header">Sun</div>
+        <div class="calendar-day-header">Mon</div>
+        <div class="calendar-day-header">Tue</div>
+        <div class="calendar-day-header">Wed</div>
+        <div class="calendar-day-header">Thu</div>
+        <div class="calendar-day-header">Fri</div>
+        <div class="calendar-day-header">Sat</div>
+        
+        <!-- Calendar Days -->
+        {% for week in cal_data %}
+            {% for day in week %}
+                <div class="calendar-day {% if day == 0 %}empty{% else %}has-date{% endif %} {% if today.year == year and today.month == month and today.day == day %}today{% endif %}">
+                    {% if day != 0 %}
+                        <div class="day-number">{{ day }}</div>
+                        <div class="day-appointments">
+                            {% if day != 0 %}
+                                {% for appointment in calendar_appointments %}
+                                    {% if appointment.date.day == day and appointment.date.month == month and appointment.date.year == year %}
+                                        <div class="appointment-chip appointment-{{ appointment.status }}">
+                                            <div class="chip-time">{{ appointment.time|time:"H:i" }}</div>
+                                            <div class="chip-client">{{ appointment.client.first_name }}</div>
+                                            <div class="chip-service">{{ appointment.service.name }}</div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'scheduler:appointment_create' %}?date={{ year }}-{{ month|date:"m" }}-{{ day }}" class="add-appointment-btn" title="Add appointment">
+                            <i data-lucide="plus"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    
+    <!-- Legend -->
+    <div class="calendar-legend">
+        <div class="legend-item">
+            <div class="legend-color status-scheduled"></div>
+            <span>Scheduled</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color status-confirmed"></div>
+            <span>Confirmed</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color status-completed"></div>
+            <span>Completed</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color status-cancelled"></div>
+            <span>Cancelled</span>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="calendar-actions">
+        <a href="{% url 'scheduler:appointment_create' %}" class="btn btn-primary">
+            <i data-lucide="plus"></i> New Appointment
+        </a>
+        <a href="{% url 'scheduler:ical_feed' %}" class="btn btn-secondary">
+            <i data-lucide="download"></i> Export Calendar
+        </a>
+        <a href="{% url 'scheduler:dashboard' %}" class="btn btn-secondary">
+            <i data-lucide="layout-dashboard"></i> Dashboard
+        </a>
+    </div>
+</div>
+
+<style>
+.calendar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: var(--border-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.calendar-day-header {
+    background: var(--card-bg);
+    padding: 1rem;
+    text-align: center;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.calendar-day {
+    background: var(--card-bg);
+    min-height: 120px;
+    padding: 0.5rem;
+    position: relative;
+}
+
+.calendar-day.empty {
+    background: var(--bg-secondary);
+}
+
+.calendar-day.today {
+    background: var(--bg-accent);
+}
+
+.day-number {
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.day-appointments {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+.appointment-chip {
+    background: var(--bg-secondary);
+    border-left: 3px solid;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.appointment-chip:hover {
+    background: var(--border-color);
+}
+
+.appointment-chip.status-scheduled { border-left-color: #1976d2; }
+.appointment-chip.status-confirmed { border-left-color: #388e3c; }
+.appointment-chip.status-completed { border-left-color: #7b1fa2; }
+.appointment-chip.status-cancelled { border-left-color: #d32f2f; }
+
+.chip-time {
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.chip-client {
+    color: var(--text-primary);
+}
+
+.chip-service {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.add-appointment-btn {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.calendar-day:hover .add-appointment-btn {
+    opacity: 1;
+}
+
+.calendar-legend {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+}
+
+.legend-color.status-scheduled { background: #1976d2; }
+.legend-color.status-confirmed { background: #388e3c; }
+.legend-color.status-completed { background: #7b1fa2; }
+.legend-color.status-cancelled { background: #d32f2f; }
+
+.calendar-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+</style>
+{% endblock content %}

@@ -35,6 +35,9 @@ INSTALLED_APPS = [
     'users',
     'visits',
     'services',
+    'pos',
+    'documents',
+    'scheduler',
 
     # 3rd Party Apps
 
@@ -139,5 +142,17 @@ MEDIA_URL = '/media/'
 LOGIN_URL = 'users:login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Change to your SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@gmail.com'  # Change to your email
+EMAIL_HOST_PASSWORD = 'your-app-password'  # Change to your app password
+DEFAULT_FROM_EMAIL = 'your-email@gmail.com'  # Change to your email
+
+# Email for Scheduler
+SCHEDULER_EMAIL_ENABLED = True
 
 from django.apps import AppConfig

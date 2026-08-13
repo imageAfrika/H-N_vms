@@ -1,0 +1,193 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}{% if mode == 'create' %}New Appointment{% else %}Edit Appointment{% endif %}{% endblock page_title %}
+
+{% block content %}
+<div class="form-container">
+    <form method="post" class="appointment-form">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h3>Appointment Details</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.client.id_for_label }}">Client *</label>
+                    {{ form.client }}
+                    {% if form.client.errors %}
+                        <div class="error">{{ form.client.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.service.id_for_label }}">Service *</label>
+                    {{ form.service }}
+                    {% if form.service.errors %}
+                        <div class="error">{{ form.service.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.date.id_for_label }}">Date *</label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                        <div class="error">{{ form.date.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.time.id_for_label }}">Time *</label>
+                    {{ form.time }}
+                    {% if form.time.errors %}
+                        <div class="error">{{ form.time.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.duration.id_for_label }}">Duration</label>
+                    {{ form.duration }}
+                    {% if form.duration.errors %}
+                        <div class="error">{{ form.duration.errors }}</div>
+                    {% endif %}
+                    <small class="form-help">Leave blank to use service default duration</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.priority.id_for_label }}">Priority</label>
+                    {{ form.priority }}
+                    {% if form.priority.errors %}
+                        <div class="error">{{ form.priority.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Additional Information</h3>
+            <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}">Notes</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}
+                    <div class="error">{{ form.notes.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {% if mode == 'create' %}Create Appointment{% else %}Update Appointment{% endif %}
+            </button>
+            <a href="{% if mode == 'create' %}{% url 'scheduler:appointment_list' %}{% else %}{% url 'scheduler:appointment_detail' appointment.id %}{% endif %}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.appointment-form {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group select,
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group input[type="number"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+</style>
+{% endblock content %}

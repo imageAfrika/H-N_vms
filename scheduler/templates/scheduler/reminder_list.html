@@ -1,0 +1,230 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Reminders{% endblock page_title %}
+
+{% block content %}
+<div class="reminder-list-container">
+    <!-- Filters -->
+    <div class="filters-bar">
+        <form method="get" class="filters-form">
+            <div class="filter-group">
+                <label for="type">Type:</label>
+                <select name="type" id="type">
+                    <option value="">All</option>
+                    <option value="email" {% if reminder_type == 'email' %}selected{% endif %}>Email</option>
+                    <option value="sms" {% if reminder_type == 'sms' %}selected{% endif %}>SMS</option>
+                    <option value="in_app" {% if reminder_type == 'in_app' %}selected{% endif %}>In-App</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="sent">Status:</label>
+                <select name="sent" id="sent">
+                    <option value="">All</option>
+                    <option value="false" {% if sent_status == 'false' %}selected{% endif %}>Pending</option>
+                    <option value="true" {% if sent_status == 'true' %}selected{% endif %}>Sent</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'scheduler:reminder_list' %}" class="btn btn-secondary">Clear</a>
+        </form>
+        
+        <a href="{% url 'scheduler:reminder_create' %}" class="btn btn-primary">
+            <i data-lucide="plus"></i> New Reminder
+        </a>
+    </div>
+    
+    <!-- Reminders Table -->
+    {% if reminders %}
+        <div class="reminders-table-container">
+            <table class="reminders-table">
+                <thead>
+                    <tr>
+                        <th>Appointment</th>
+                        <th>Client</th>
+                        <th>Type</th>
+                        <th>Remind Before</th>
+                        <th>Status</th>
+                        <th>Sent At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reminder in reminders %}
+                        <tr class="reminder-row reminder-{{ reminder.sent|yesno:'sent,pending' }}">
+                            <td>
+                                <strong>{{ reminder.appointment.service.name }}</strong>
+                                <br>
+                                <small>{{ reminder.appointment.date|date:"M d, Y" }} at {{ reminder.appointment.time|time:"H:i" }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ reminder.appointment.client.first_name }} {{ reminder.appointment.client.second_name }}</strong>
+                                <br>
+                                <small>{{ reminder.appointment.client.email }}</small>
+                            </td>
+                            <td>
+                                <span class="type-badge">{{ reminder.get_reminder_type_display }}</span>
+                            </td>
+                            <td>{{ reminder.remind_before }}</td>
+                            <td>
+                                {% if reminder.sent %}
+                                    <span class="status-badge status-sent">Sent</span>
+                                {% else %}
+                                    <span class="status-badge status-pending">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if reminder.sent_at %}
+                                    {{ reminder.sent_at|date:"M d, H:i" }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'scheduler:appointment_detail' reminder.appointment.id %}" class="btn btn-sm btn-secondary" title="View Appointment">
+                                        <i data-lucide="eye"></i>
+                                    </a>
+                                    {% if not reminder.sent %}
+                                        <button onclick="sendReminder({{ reminder.id }})" class="btn btn-sm btn-success" title="Send Now">
+                                            <i data-lucide="send"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="no-data">
+            <p>No reminders found.</p>
+            <a href="{% url 'scheduler:reminder_create' %}" class="btn btn-primary">Create First Reminder</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.reminder-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.filters-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filters-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.filter-group select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    min-width: 150px;
+}
+
+.reminders-table-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.reminders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reminders-table th,
+.reminders-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.reminders-table th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.reminders-table tr:hover {
+    background: var(--bg-accent);
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-badge.status-sent { background: #e8f5e9; color: #388e3c; }
+.status-badge.status-pending { background: #fff3e0; color: #f57c00; }
+
+.action-buttons {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.no-data {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.no-data p {
+    margin-bottom: 1rem;
+}
+</style>
+
+<script>
+function sendReminder(reminderId) {
+    if (confirm('Send this reminder now?')) {
+        // In a real implementation, this would make an AJAX call
+        alert('Reminder sent (demo)');
+    }
+}
+</script>
+{% endblock content %}

@@ -1,0 +1,173 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}{% if mode == 'create' %}New Message{% else %}Edit Message{% endif %}{% endblock page_title %}
+
+{% block content %}
+<div class="form-container">
+    <form method="post" class="message-form">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h3>Message Details</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.client.id_for_label }}">Recipient *</label>
+                    {{ form.client }}
+                    {% if form.client.errors %}
+                        <div class="error">{{ form.client.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.message_type.id_for_label }}">Message Type *</label>
+                    {{ form.message_type }}
+                    {% if form.message_type.errors %}
+                        <div class="error">{{ form.message_type.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.appointment.id_for_label }}">Related Appointment</label>
+                {{ form.appointment }}
+                {% if form.appointment.errors %}
+                    <div class="error">{{ form.appointment.errors }}</div>
+                {% endif %}
+                <small class="form-help">Optional: Link this message to an appointment</small>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Message Content</h3>
+            <div class="form-group">
+                <label for="{{ form.subject.id_for_label }}">Subject</label>
+                {{ form.subject }}
+                {% if form.subject.errors %}
+                    <div class="error">{{ form.subject.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.body.id_for_label }}">Message Body *</label>
+                {{ form.body }}
+                {% if form.body.errors %}
+                    <div class="error">{{ form.body.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {% if mode == 'create' %}Create Message{% else %}Update Message{% endif %}
+            </button>
+            <button type="submit" name="send_now" value="true" class="btn btn-success">
+                {% if mode == 'create' %}Create and Send{% else %}Update and Send{% endif %}
+            </button>
+            <a href="{% if mode == 'create' %}{% url 'scheduler:message_list' %}{% else %}{% url 'scheduler:message_detail' message.id %}{% endif %}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.message-form {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group select,
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+</style>
+{% endblock content %}

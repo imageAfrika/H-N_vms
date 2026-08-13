@@ -1,0 +1,289 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Scheduler Dashboard{% endblock page_title %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Stats Cards -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-info">
+                <div class="stat-label">Today's Appointments</div>
+                <div class="stat-value">{{ today_appointments.count }}</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+                <div class="stat-label">Completed Today</div>
+                <div class="stat-value">{{ completed_today }}</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">📧</div>
+            <div class="stat-info">
+                <div class="stat-label">Pending Reminders</div>
+                <div class="stat-value">{{ pending_reminders }}</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-info">
+                <div class="stat-label">This Month</div>
+                <div class="stat-value">{{ total_appointments }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Today's Schedule -->
+    <div class="dashboard-section">
+        <h2>Today's Schedule - {{ today|date:"l, F j, Y" }}</h2>
+        {% if today_appointments %}
+            <div class="appointment-list">
+                {% for appointment in today_appointments %}
+                    <div class="appointment-card appointment-{{ appointment.status }}">
+                        <div class="appointment-time">{{ appointment.time|time:"H:i" }}</div>
+                        <div class="appointment-details">
+                            <div class="appointment-client">
+                                <strong>{{ appointment.client.first_name }} {{ appointment.client.second_name }}</strong>
+                            </div>
+                            <div class="appointment-service">{{ appointment.service.name }}</div>
+                            <div class="appointment-status status-{{ appointment.status }}">
+                                {{ appointment.get_status_display }}
+                            </div>
+                        </div>
+                        <div class="appointment-actions">
+                            <a href="{% url 'scheduler:appointment_detail' appointment.id %}" class="btn btn-sm">View</a>
+                            {% if appointment.status == 'scheduled' %}
+                                <a href="{% url 'scheduler:appointment_confirm' appointment.id %}" class="btn btn-sm btn-success">Confirm</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data">No appointments scheduled for today.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Upcoming Appointments -->
+    <div class="dashboard-section">
+        <h2>Upcoming This Week</h2>
+        {% if upcoming_appointments %}
+            <div class="appointment-list">
+                {% for appointment in upcoming_appointments %}
+                    <div class="appointment-card appointment-{{ appointment.status }}">
+                        <div class="appointment-date">{{ appointment.date|date:"M d" }}</div>
+                        <div class="appointment-time">{{ appointment.time|time:"H:i" }}</div>
+                        <div class="appointment-details">
+                            <div class="appointment-client">
+                                <strong>{{ appointment.client.first_name }} {{ appointment.client.second_name }}</strong>
+                            </div>
+                            <div class="appointment-service">{{ appointment.service.name }}</div>
+                        </div>
+                        <div class="appointment-actions">
+                            <a href="{% url 'scheduler:appointment_detail' appointment.id %}" class="btn btn-sm">View</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data">No upcoming appointments this week.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Recent Messages -->
+    <div class="dashboard-section">
+        <h2>Recent Messages</h2>
+        {% if recent_messages %}
+            <div class="message-list">
+                {% for message in recent_messages %}
+                    <div class="message-card message-{{ message.status }}">
+                        <div class="message-type">{{ message.get_message_type_display }}</div>
+                        <div class="message-details">
+                            <div class="message-subject">
+                                <strong>{{ message.subject|default:"No subject" }}</strong>
+                            </div>
+                            <div class="message-client">
+                                {% if message.client %}
+                                    To: {{ message.client.first_name }} {{ message.client.second_name }}
+                                {% else %}
+                                    No recipient
+                                {% endif %}
+                            </div>
+                            <div class="message-status status-{{ message.status }}">
+                                {{ message.get_status_display }}
+                            </div>
+                        </div>
+                        <div class="message-time">{{ message.created_at|timesince }} ago</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data">No recent messages.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="dashboard-section">
+        <h2>Quick Actions</h2>
+        <div class="quick-actions">
+            <a href="{% url 'scheduler:appointment_create' %}" class="btn btn-primary">
+                <i data-lucide="plus"></i> New Appointment
+            </a>
+            <a href="{% url 'scheduler:calendar' %}" class="btn">
+                <i data-lucide="calendar"></i> View Calendar
+            </a>
+            <a href="{% url 'scheduler:message_create' %}" class="btn">
+                <i data-lucide="mail"></i> Send Message
+            </a>
+            <a href="{% url 'scheduler:reminder_list' %}" class="btn">
+                <i data-lucide="bell"></i> Manage Reminders
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.dashboard-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.dashboard-section h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+}
+
+.appointment-list, .message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.appointment-card, .message-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.appointment-time, .appointment-date {
+    font-weight: bold;
+    color: var(--text-primary);
+    min-width: 80px;
+}
+
+.appointment-details, .message-details {
+    flex: 1;
+}
+
+.appointment-client, .message-subject {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.appointment-service, .message-client {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.appointment-status, .message-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-scheduled { background: #e3f2fd; color: #1976d2; }
+.status-confirmed { background: #e8f5e9; color: #388e3c; }
+.status-completed { background: #f3e5f5; color: #7b1fa2; }
+.status-cancelled { background: #ffebee; color: #d32f2f; }
+.status-draft { background: #fff3e0; color: #f57c00; }
+.status-sent { background: #e8f5e9; color: #388e3c; }
+.status-failed { background: #ffebee; color: #d32f2f; }
+
+.appointment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    min-width: 80px;
+    text-align: right;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.quick-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.no-data {
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 1rem 0;
+}
+</style>
+{% endblock content %}

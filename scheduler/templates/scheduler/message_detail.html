@@ -1,0 +1,213 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Message Details{% endblock page_title %}
+
+{% block content %}
+<div class="message-detail-container">
+    <div class="message-header">
+        <div class="message-title">
+            <h2>{{ message.subject|default:"No Subject" }}</h2>
+            <p class="message-subtitle">{{ message.get_message_type_display }} - {{ message.get_direction_display }}</p>
+        </div>
+        <div class="message-actions">
+            {% if message.status == 'draft' %}
+                <a href="{% url 'scheduler:message_send' message.id %}" class="btn btn-success">
+                    <i data-lucide="send"></i> Send
+                </a>
+            {% endif %}
+            <a href="{% url 'scheduler:message_list' %}" class="btn btn-secondary">
+                <i data-lucide="list"></i> All Messages
+            </a>
+        </div>
+    </div>
+    
+    <div class="message-info-grid">
+        <div class="info-card">
+            <h3>Recipient Information</h3>
+            {% if message.client %}
+                <div class="info-item">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">{{ message.client.first_name }} {{ message.client.second_name }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ message.client.email }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value">{{ message.client.phone }}</span>
+                </div>
+            {% else %}
+                <p class="no-data">No recipient specified</p>
+            {% endif %}
+        </div>
+        
+        <div class="info-card">
+            <h3>Message Status</h3>
+            <div class="info-item">
+                <span class="info-label">Status:</span>
+                <span class="info-value status-{{ message.status }}">{{ message.get_status_display }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Created:</span>
+                <span class="info-value">{{ message.created_at|date:"l, F j, Y H:i" }}</span>
+            </div>
+            {% if message.sent_at %}
+                <div class="info-item">
+                    <span class="info-label">Sent:</span>
+                    <span class="info-value">{{ message.sent_at|date:"l, F j, Y H:i" }}</span>
+                </div>
+            {% endif %}
+            {% if message.delivered_at %}
+                <div class="info-item">
+                    <span class="info-label">Delivered:</span>
+                    <span class="info-value">{{ message.delivered_at|date:"l, F j, Y H:i" }}</span>
+                </div>
+            {% endif %}
+            {% if message.read_at %}
+                <div class="info-item">
+                    <span class="info-label">Read:</span>
+                    <span class="info-value">{{ message.read_at|date:"l, F j, Y H:i" }}</span>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if message.appointment %}
+        <div class="info-card">
+            <h3>Related Appointment</h3>
+            <div class="info-item">
+                <span class="info-label">Service:</span>
+                <span class="info-value">{{ message.appointment.service.name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date:</span>
+                <span class="info-value">{{ message.appointment.date|date:"l, F j, Y" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Time:</span>
+                <span class="info-value">{{ message.appointment.time|time:"H:i" }}</span>
+            </div>
+            <a href="{% url 'scheduler:appointment_detail' message.appointment.id %}" class="btn btn-sm btn-secondary">
+                View Appointment
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="message-content-card">
+        <h3>Message Content</h3>
+        <div class="message-body">
+            {{ message.body|linebreaks }}
+        </div>
+    </div>
+</div>
+
+<style>
+.message-detail-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.message-title h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.message-subtitle {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.message-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.message-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.info-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.info-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.status-draft { color: #f57c00; }
+.status-sent { color: #388e3c; }
+.status-delivered { color: #1976d2; }
+.status-failed { color: #d32f2f; }
+.status-read { color: #7b1fa2; }
+
+.message-content-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.message-content-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.message-body {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+}
+
+.no-data {
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 1rem 0;
+}
+</style>
+{% endblock content %}

@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 django = "==2.2.6"
+icalendar = ">=5.0.0"
 
 [dev-packages]
 

@@ -1,148 +1,215 @@
 
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}  {% endblock title %}</title>        
-        
-                    <!-- PAGE STYLING -->
-        <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
-        <link rel="stylesheet" href="{% static 'HN_vms/css/login.css' %}">
-        <link rel="stylesheet" href="{% static 'HN_vms/css/index.css' %}">
-        <link rel="stylesheet" href="{% static 'HN_vms/css/register_client.css' %}">
-        <link rel="stylesheet" href="{% static 'HN_vms/css/search.css' %}">
-        <!-- Inside the <head> tag of base.html -->
-        <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
 
-                    <!-- OTHER STYLING -->
-        <!-- <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"> -->
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css'>
-        <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css'>
+<html lang="en">
+
+<head>
+
+    {% load static %}
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}H&amp;N Client Management{% endblock title %}</title>
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/base.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/login.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/index.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/register_client.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/search.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/add_service.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/clients.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/services.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/pos.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/appointments.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/documents.css' %}">
+
+    <link rel="stylesheet" href="{% static 'HN_vms/css/scheduler/scheduler.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
 
 </head>
 
-<body>
+<body data-theme="dark">
 
-  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-    <div class="container-fluid">
-    <h2> Client Management System</h2>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01"      aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-    <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'users:client_list' %}">Clients</a>
-          </li>
+    <div class="app-shell">
 
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-              <span class="navbar-text">Hello, {{ user.username }}.</span>
-            </li>
-            <li class="nav-item">
-              <!-- <a class="nav-link" href="{% url 'users:logout' %}">Logout</a> -->
-              <a href="{% url 'users:logout' %}">Logout here</a>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'users:login' %}">Log in</a></li>
-          {% endif %}
-    </ul>             
-        </ul>
-        <form class="d-flex">
-          <input class="form-control me-sm-2" type="search" placeholder="Search">
-          <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </div>
-    </div>
-</nav>
+        {% block topbar %}
+        <header class="topbar">
 
-  <div class="nav_bar">
+            <a class="brand" href="{% url 'users:index' %}">
 
-    <nav class="navbar navbar-expand-md navbar-light bg-light border">
-        <!-- <i class="fa fa-google-wallet fa-2x mr-2"></i> -->
-        <div class="header_logo">
-          <img src="{% static 'HN_vms/images/HN_Logo.png' %}" alt="" class="fa-2x"> 
-        
+                <img src="{% static 'HN_vms/images/HN_Logo.png' %}" alt="HN logo" class="brand-logo">
 
-        <a style="font-family: 'Rubik',sans-serif;" class="navbar-brand" href="{% url 'users:index' %}">
-          H&N
-        </a>
-      </div>
+                <span>H&amp;N</span>
 
-        <!-- Toggle button -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse"
-          data-target="#navbarCollapse" aria-controls="navbarCollapse"
-          aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- End of Toggle button -->
-            
-        <div style="font-family: 'Rubik',sans-serif;" class="collapse navbar-collapse" id="navbarCollapse">
+            </a>
 
-            
-            <!-- User authentication -->
-            <ul class="navbar-nav ml-auto">
-                  <form action="{% url 'users:search' %}" method="get">
-                    <li class="navbar-item mr-3 my-auto">
-                    <div class="input-group">
-                      <input class="form-control" name="query" type="text" placeholder="Search">
-                      <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary">
-                          <i class="fa fa-search"></i>
-                        </button>
-                      </div>
-                    </div>
-                    </li>
-                  </form>
 
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users:client_list' %}">Clients</a>
-                  </li>
 
-                  {% if user.is_authenticated %}
-                    <li class="nav-item">
-                      <span class="navbar-text">Hello, {{ user.username }}.</span>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'users:logout' %}">Logout</i></a>
-                    </li>
-                  {% else %}
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'users:login' %}">Log in</a></li>
-                  {% endif %}
-            </ul>
-            <!-- End of User authentication -->
+            <nav class="top-nav" aria-label="Primary">
+
+                <a href="{% url 'users:client_list' %}">Clients</a>
+
+                <a href="{% url 'services:service_list' %}">Services</a>
+
+                <a href="{% url 'pos:dashboard' %}">POS</a>
+
+                <a href="{% url 'users:search' %}">Search</a>
+
+            </nav>
+
+
+
+            <div class="top-actions">
+
+                <button class="theme-toggle" type="button" aria-label="Toggle color mode">☀︎</button>
+
+                {% if user.is_authenticated %}
+
+                    <span class="user-pill">{{ user.username }}</span>
+
+                    <a href="{% url 'users:logout' %}">Logout</a>
+
+                {% else %}
+
+                    <a href="{% url 'users:login' %}">Login</a>
+
+                {% endif %}
+
+            </div>
+
+        </header>
+        {% endblock topbar %}
+
+
+
+        <div class="layout-shell">
+
+            {% block sidebar %}
+            <aside class="sidebar" aria-label="Application navigation">
+
+                <div class="sidebar-heading">Navigation</div>
+
+                <nav class="sidebar-nav">
+
+                    <a href="{% url 'users:index' %}"><i data-lucide="layout-dashboard" class="sidebar-nav-icon"></i>Dashboard</a>
+
+                    <a href="{% url 'users:client_list' %}"><i data-lucide="users" class="sidebar-nav-icon"></i>Clients</a>
+
+                    <a href="{% url 'users:register_client' %}"><i data-lucide="user-plus" class="sidebar-nav-icon"></i>Register Client</a>
+
+                    <a href="{% url 'users:daily_visits' %}"><i data-lucide="calendar" class="sidebar-nav-icon"></i>Daily Visits</a>
+
+                    <a href="{% url 'scheduler:calendar' %}"><i data-lucide="calendar-check" class="sidebar-nav-icon"></i>Scheduler</a>
+
+                    <a href="{% url 'services:service_list' %}"><i data-lucide="briefcase" class="sidebar-nav-icon"></i>Services</a>
+
+                    <a href="{% url 'pos:dashboard' %}"><i data-lucide="shopping-cart" class="sidebar-nav-icon"></i>POS</a>
+
+                    <a href="{% url 'documents:document_list' %}"><i data-lucide="file-text" class="sidebar-nav-icon"></i>Documents</a>
+
+                    <a href="{% url 'users:search' %}"><i data-lucide="search" class="sidebar-nav-icon"></i>Search</a>
+
+                </nav>
+
+            </aside>
+            {% endblock sidebar %}
+
+
+
+            <main class="content-shell">
+
+            <div class="page-heading">
+
+                {% block header %}{% endblock header %}
+
+            </div>
+
+            <section class="content-card">
+
+                {% block content %}{% endblock content %}
+
+            </section>
+
+            </main>
+
         </div>
-    </nav>
-</div>
 
-<main>
-    <div>
-      {% block header %}{% endblock header %}
     </div>
-    <div>
-        {% block content %}{% endblock content %}
-    </div>
-</main>
 
 
 
+    <script>
+
+        (function () {
+
+            const storageKey = 'hn-theme';
+
+            const buttons = document.querySelectorAll('.theme-toggle');
+
+            const setTheme = (theme) => {
+
+                document.body.setAttribute('data-theme', theme);
+
+                document.documentElement.setAttribute('data-theme', theme);
+
+                buttons.forEach((button) => {
+
+                    button.textContent = theme === 'dark' ? '☀︎' : '☾';
+
+                    button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+
+                });
+
+                localStorage.setItem(storageKey, theme);
+
+            };
 
 
 
+            const savedTheme = localStorage.getItem(storageKey);
+
+            const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+            setTheme(savedTheme || preferredTheme);
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ></script>
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.js'></script>
+            buttons.forEach((button) => {
 
+                button.addEventListener('click', () => {
 
+                    const nextTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+
+                    setTheme(nextTheme);
+
+                });
+
+            });
+
+        })();
+
+    </script>
+
+    <script>
+        lucide.createIcons();
+    </script>
 
 </body>
+
 </html>

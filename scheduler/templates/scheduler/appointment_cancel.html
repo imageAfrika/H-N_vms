@@ -1,0 +1,152 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Cancel Appointment{% endblock page_title %}
+
+{% block content %}
+<div class="cancel-container">
+    <div class="cancel-card">
+        <div class="cancel-header">
+            <h2>Cancel Appointment</h2>
+            <div class="cancel-icon">⚠️</div>
+        </div>
+        
+        <div class="appointment-summary">
+            <h3>Appointment Details</h3>
+            <div class="summary-item">
+                <span class="label">Client:</span>
+                <span class="value">{{ appointment.client.first_name }} {{ appointment.client.second_name }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Service:</span>
+                <span class="value">{{ appointment.service.name }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Date:</span>
+                <span class="value">{{ appointment.date|date:"l, F j, Y" }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Time:</span>
+                <span class="value">{{ appointment.time|time:"H:i" }}</span>
+            </div>
+        </div>
+        
+        <div class="cancel-warning">
+            <p><strong>Are you sure you want to cancel this appointment?</strong></p>
+            <p>This action will:</p>
+            <ul>
+                <li>Mark the appointment as cancelled</li>
+                <li>Send a cancellation notification to the client</li>
+                <li>Free up the time slot for other appointments</li>
+            </ul>
+        </div>
+        
+        <form method="post" class="cancel-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i data-lucide="x"></i> Yes, Cancel Appointment
+                </button>
+                <a href="{% url 'scheduler:appointment_detail' appointment.id %}" class="btn btn-secondary">
+                    <i data-lucide="arrow-left"></i> No, Go Back
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.cancel-container {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.cancel-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.cancel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cancel-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.cancel-icon {
+    font-size: 2rem;
+}
+
+.appointment-summary {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.appointment-summary h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item .label {
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.summary-item .value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.cancel-warning {
+    background: #fff3e0;
+    border: 1px solid #ff9800;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.cancel-warning p {
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.cancel-warning ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    color: var(--text-primary);
+}
+
+.cancel-form {
+    margin-top: 1.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+</style>
+{% endblock content %}

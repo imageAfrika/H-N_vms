@@ -21,11 +21,18 @@ urlpatterns = [
     # urlpatterns for services
     path('services/', include('services.urls')),
 
+    # urlpatterns for pos
+    path('pos/', include('pos.urls')),
+
+    # urlpatterns for documents
+    path('documents/', include('documents.urls')),
+
+    # urlpatterns for scheduler
+    path('scheduler/', include('scheduler.urls')),
+
     #url patterns for logging out
     # path('logged_out/', include('logged_out.urls')),
     
     
 
 ]
-
-

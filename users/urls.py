@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.shortcuts import redirect
 from . import views
 from .views import logout_view
 
@@ -37,6 +38,10 @@ urlpatterns = [
 
     # daily visits
     path('daily_visits/', views.daily_visits, name='daily_visits'),
+
+    # appointments (redirect to scheduler)
+    path('appointments/', lambda request: redirect('scheduler:appointment_list'), name='appointment_list'),
+    path('appointments/create/', views.create_appointment, name='create_appointment'),
 
     #Log out
     path('logout/', logout_view, name='logout'),

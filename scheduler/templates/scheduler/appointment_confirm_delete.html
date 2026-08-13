@@ -1,0 +1,141 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Delete Appointment{% endblock page_title %}
+
+{% block content %}
+<div class="delete-container">
+    <div class="delete-card">
+        <div class="delete-header">
+            <h2>Delete Appointment</h2>
+            <div class="delete-icon">🗑️</div>
+        </div>
+        
+        <div class="appointment-summary">
+            <h3>Appointment Details</h3>
+            <div class="summary-item">
+                <span class="label">Client:</span>
+                <span class="value">{{ appointment.client.first_name }} {{ appointment.client.second_name }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Service:</span>
+                <span class="value">{{ appointment.service.name }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Date:</span>
+                <span class="value">{{ appointment.date|date:"l, F j, Y" }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Time:</span>
+                <span class="value">{{ appointment.time|time:"H:i" }}</span>
+            </div>
+        </div>
+        
+        <div class="delete-warning">
+            <p><strong>Are you sure you want to permanently delete this appointment?</strong></p>
+            <p>This action cannot be undone.</p>
+        </div>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i data-lucide="trash-2"></i> Yes, Delete Appointment
+                </button>
+                <a href="{% url 'scheduler:appointment_detail' appointment.id %}" class="btn btn-secondary">
+                    <i data-lucide="arrow-left"></i> No, Go Back
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.delete-container {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.delete-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.delete-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.delete-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.delete-icon {
+    font-size: 2rem;
+}
+
+.appointment-summary {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.appointment-summary h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item .label {
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.summary-item .value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.delete-warning {
+    background: #ffebee;
+    border: 1px solid #d32f2f;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.delete-warning p {
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.delete-form {
+    margin-top: 1.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+</style>
+{% endblock content %}

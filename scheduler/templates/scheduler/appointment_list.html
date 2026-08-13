@@ -1,0 +1,241 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Appointments{% endblock page_title %}
+
+{% block content %}
+<div class="appointment-list-container">
+    <!-- Filters -->
+    <div class="filters-bar">
+        <form method="get" class="filters-form">
+            <div class="filter-group">
+                <label for="status">Status:</label>
+                <select name="status" id="status">
+                    <option value="">All</option>
+                    <option value="scheduled" {% if status_filter == 'scheduled' %}selected{% endif %}>Scheduled</option>
+                    <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="date">Date:</label>
+                <input type="date" name="date" id="date" value="{{ date_filter|default:'' }}">
+            </div>
+            
+            <div class="filter-group">
+                <label for="search">Search:</label>
+                <input type="text" name="search" id="search" value="{{ search_query|default:'' }}" placeholder="Client name or service...">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'scheduler:appointment_list' %}" class="btn btn-secondary">Clear</a>
+        </form>
+        
+        <a href="{% url 'scheduler:appointment_create' %}" class="btn btn-primary">
+            <i data-lucide="plus"></i> New Appointment
+        </a>
+    </div>
+    
+    <!-- Appointments Table -->
+    {% if page_obj %}
+        <div class="appointments-table-container">
+            <table class="appointments-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Client</th>
+                        <th>Service</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in page_obj %}
+                        <tr class="appointment-row appointment-{{ appointment.status }}">
+                            <td>{{ appointment.date|date:"M d, Y" }}</td>
+                            <td>{{ appointment.time|time:"H:i" }}</td>
+                            <td>
+                                <strong>{{ appointment.client.first_name }} {{ appointment.client.second_name }}</strong>
+                                <br>
+                                <small>{{ appointment.client.email }}</small>
+                            </td>
+                            <td>{{ appointment.service.name }}</td>
+                            <td>
+                                <span class="status-badge status-{{ appointment.status }}">
+                                    {{ appointment.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ appointment.get_priority_display }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'scheduler:appointment_detail' appointment.id %}" class="btn btn-sm btn-secondary" title="View">
+                                        <i data-lucide="eye"></i>
+                                    </a>
+                                    <a href="{% url 'scheduler:appointment_update' appointment.id %}" class="btn btn-sm btn-secondary" title="Edit">
+                                        <i data-lucide="edit"></i>
+                                    </a>
+                                    {% if appointment.status == 'scheduled' %}
+                                        <a href="{% url 'scheduler:appointment_confirm' appointment.id %}" class="btn btn-sm btn-success" title="Confirm">
+                                            <i data-lucide="check"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if status_filter %}&status={{ status_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-secondary">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-secondary">Previous</a>
+                {% endif %}
+                
+                <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-secondary">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-secondary">Last</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="no-data">
+            <p>No appointments found.</p>
+            <a href="{% url 'scheduler:appointment_create' %}" class="btn btn-primary">Create First Appointment</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.appointment-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.filters-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filters-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.filter-group select,
+.filter-group input[type="date"],
+.filter-group input[type="text"] {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    min-width: 150px;
+}
+
+.appointments-table-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.appointments-table th,
+.appointments-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.appointments-table th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.appointments-table tr:hover {
+    background: var(--bg-accent);
+}
+
+.appointment-row.status-scheduled { border-left: 3px solid #1976d2; }
+.appointment-row.status-confirmed { border-left: 3px solid #388e3c; }
+.appointment-row.status-completed { border-left: 3px solid #7b1fa2; }
+.appointment-row.status-cancelled { border-left: 3px solid #d32f2f; }
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-badge.status-scheduled { background: #e3f2fd; color: #1976d2; }
+.status-badge.status-confirmed { background: #e8f5e9; color: #388e3c; }
+.status-badge.status-completed { background: #f3e5f5; color: #7b1fa2; }
+.status-badge.status-cancelled { background: #ffebee; color: #d32f2f; }
+
+.action-buttons {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.page-info {
+    padding: 0.5rem 1rem;
+    color: var(--text-muted);
+}
+
+.no-data {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.no-data p {
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock content %}

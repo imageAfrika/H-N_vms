@@ -1,0 +1,303 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Appointment Details{% endblock page_title %}
+
+{% block content %}
+<div class="appointment-detail-container">
+    <div class="appointment-header">
+        <div class="appointment-title">
+            <h2>{{ appointment.client.first_name }} {{ appointment.client.second_name }}</h2>
+            <p class="appointment-subtitle">{{ appointment.service.name }}</p>
+        </div>
+        <div class="appointment-actions">
+            <a href="{% url 'scheduler:appointment_update' appointment.id %}" class="btn btn-secondary">
+                <i data-lucide="edit"></i> Edit
+            </a>
+            <a href="{% url 'scheduler:appointment_cancel' appointment.id %}" class="btn btn-danger">
+                <i data-lucide="x"></i> Cancel
+            </a>
+            <a href="{% url 'scheduler:appointment_ical' appointment.id %}" class="btn btn-secondary">
+                <i data-lucide="download"></i> Export
+            </a>
+        </div>
+    </div>
+    
+    <div class="appointment-info-grid">
+        <div class="info-card">
+            <h3>Date & Time</h3>
+            <div class="info-item">
+                <span class="info-label">Date:</span>
+                <span class="info-value">{{ appointment.date|date:"l, F j, Y" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Time:</span>
+                <span class="info-value">{{ appointment.time|time:"H:i" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">End Time:</span>
+                <span class="info-value">{{ appointment.get_end_time|time:"H:i" }}</span>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <h3>Status & Priority</h3>
+            <div class="info-item">
+                <span class="info-label">Status:</span>
+                <span class="info-value status-{{ appointment.status }}">{{ appointment.get_status_display }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Priority:</span>
+                <span class="info-value">{{ appointment.get_priority_display }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Reminder Sent:</span>
+                <span class="info-value">{% if appointment.reminder_sent %}Yes{% else %}No{% endif %}</span>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <h3>Client Information</h3>
+            <div class="info-item">
+                <span class="info-label">Name:</span>
+                <span class="info-value">{{ appointment.client.first_name }} {{ appointment.client.second_name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ appointment.client.email }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Phone:</span>
+                <span class="info-value">{{ appointment.client.phone }}</span>
+            </div>
+        </div>
+    </div>
+    
+    {% if appointment.notes %}
+    <div class="info-card full-width">
+        <h3>Notes</h3>
+        <p>{{ appointment.notes }}</p>
+    </div>
+    {% endif %}
+    
+    <div class="reminders-section">
+        <h3>Reminders</h3>
+        {% if reminders %}
+            <div class="reminders-list">
+                {% for reminder in reminders %}
+                    <div class="reminder-card reminder-{{ reminder.sent|yesno:'sent,pending' }}">
+                        <div class="reminder-type">{{ reminder.get_reminder_type_display }}</div>
+                        <div class="reminder-time">Before: {{ reminder.remind_before }}</div>
+                        <div class="reminder-status">
+                            {% if reminder.sent %}
+                                <span class="status-sent">Sent {{ reminder.sent_at|timesince }} ago</span>
+                            {% else %}
+                                <span class="status-pending">Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data">No reminders set for this appointment.</p>
+        {% endif %}
+        <a href="{% url 'scheduler:reminder_create' %}?appointment={{ appointment.id }}" class="btn btn-sm btn-secondary">
+            <i data-lucide="plus"></i> Add Reminder
+        </a>
+    </div>
+    
+    <div class="messages-section">
+        <h3>Messages</h3>
+        {% if messages %}
+            <div class="messages-list">
+                {% for message in messages %}
+                    <div class="message-card message-{{ message.status }}">
+                        <div class="message-type">{{ message.get_message_type_display }}</div>
+                        <div class="message-subject">{{ message.subject|default:"No subject" }}</div>
+                        <div class="message-status status-{{ message.status }}">{{ message.get_status_display }}</div>
+                        <div class="message-time">{{ message.created_at|timesince }} ago</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data">No messages for this appointment.</p>
+        {% endif %}
+        <a href="{% url 'scheduler:message_create' %}?appointment={{ appointment.id }}" class="btn btn-sm btn-secondary">
+            <i data-lucide="mail"></i> Send Message
+        </a>
+    </div>
+    
+    <div class="action-buttons">
+        {% if appointment.status == 'scheduled' %}
+            <a href="{% url 'scheduler:appointment_confirm' appointment.id %}" class="btn btn-success">
+                <i data-lucide="check"></i> Confirm Appointment
+            </a>
+        {% endif %}
+        {% if appointment.status == 'confirmed' %}
+            <a href="#" class="btn btn-primary" onclick="markCompleted()">
+                <i data-lucide="check-circle"></i> Mark as Completed
+            </a>
+        {% endif %}
+        <a href="{% url 'scheduler:calendar' %}" class="btn btn-secondary">
+            <i data-lucide="calendar"></i> Back to Calendar
+        </a>
+    </div>
+</div>
+
+<style>
+.appointment-detail-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.appointment-title h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.appointment-subtitle {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.appointment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.appointment-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.info-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.info-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.status-scheduled { color: #1976d2; }
+.status-confirmed { color: #388e3c; }
+.status-completed { color: #7b1fa2; }
+.status-cancelled { color: #d32f2f; }
+.status-draft { color: #f57c00; }
+.status-sent { color: #388e3c; }
+.status-failed { color: #d32f2f; }
+
+.reminders-section, .messages-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.reminders-section h3, .messages-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.reminders-list, .messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.reminder-card, .message-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reminder-type, .message-type {
+    font-weight: 500;
+    color: var(--text-primary);
+    min-width: 80px;
+}
+
+.reminder-time, .message-subject {
+    flex: 1;
+    color: var(--text-primary);
+}
+
+.reminder-status, .message-status {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.status-sent { background: #e8f5e9; color: #388e3c; }
+.status-pending { background: #fff3e0; color: #f57c00; }
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.no-data {
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 1rem 0;
+}
+</style>
+
+<script>
+function markCompleted() {
+    if (confirm('Mark this appointment as completed?')) {
+        // In a real implementation, this would make an AJAX call
+        alert('Appointment marked as completed (demo)');
+    }
+}
+</script>
+{% endblock content %}

@@ -1,0 +1,253 @@
+{% extends "scheduler/base.html" %}
+
+{% block page_title %}Messages{% endblock page_title %}
+
+{% block content %}
+<div class="message-list-container">
+    <!-- Filters -->
+    <div class="filters-bar">
+        <form method="get" class="filters-form">
+            <div class="filter-group">
+                <label for="type">Type:</label>
+                <select name="type" id="type">
+                    <option value="">All</option>
+                    <option value="email" {% if message_type == 'email' %}selected{% endif %}>Email</option>
+                    <option value="sms" {% if message_type == 'sms' %}selected{% endif %}>SMS</option>
+                    <option value="in_app" {% if message_type == 'in_app' %}selected{% endif %}>In-App</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="status">Status:</label>
+                <select name="status" id="status">
+                    <option value="">All</option>
+                    <option value="draft" {% if status == 'draft' %}selected{% endif %}>Draft</option>
+                    <option value="sent" {% if status == 'sent' %}selected{% endif %}>Sent</option>
+                    <option value="delivered" {% if status == 'delivered' %}selected{% endif %}>Delivered</option>
+                    <option value="failed" {% if status == 'failed' %}selected{% endif %}>Failed</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'scheduler:message_list' %}" class="btn btn-secondary">Clear</a>
+        </form>
+        
+        <a href="{% url 'scheduler:message_create' %}" class="btn btn-primary">
+            <i data-lucide="plus"></i> New Message
+        </a>
+    </div>
+    
+    <!-- Messages Table -->
+    {% if page_obj %}
+        <div class="messages-table-container">
+            <table class="messages-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Direction</th>
+                        <th>Recipient</th>
+                        <th>Subject</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in page_obj %}
+                        <tr class="message-row message-{{ message.status }}">
+                            <td>
+                                <span class="type-badge">{{ message.get_message_type_display }}</span>
+                            </td>
+                            <td>
+                                <span class="direction-badge">{{ message.get_direction_display }}</span>
+                            </td>
+                            <td>
+                                {% if message.client %}
+                                    <strong>{{ message.client.first_name }} {{ message.client.second_name }}</strong>
+                                    <br>
+                                    <small>{{ message.client.email }}</small>
+                                {% else %}
+                                    <em>No recipient</em>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ message.subject|default:"No subject" }}</strong>
+                                <br>
+                                <small>{{ message.body|truncatewords:10 }}</small>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ message.status }}">
+                                    {{ message.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ message.created_at|date:"M d, H:i" }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'scheduler:message_detail' message.id %}" class="btn btn-sm btn-secondary" title="View">
+                                        <i data-lucide="eye"></i>
+                                    </a>
+                                    {% if message.status == 'draft' %}
+                                        <a href="{% url 'scheduler:message_send' message.id %}" class="btn btn-sm btn-success" title="Send">
+                                            <i data-lucide="send"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if message_type %}&type={{ message_type }}{% endif %}{% if status %}&status={{ status }}{% endif %}" class="btn btn-secondary">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if message_type %}&type={{ message_type }}{% endif %}{% if status %}&status={{ status }}{% endif %}" class="btn btn-secondary">Previous</a>
+                {% endif %}
+                
+                <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if message_type %}&type={{ message_type }}{% endif %}{% if status %}&status={{ status }}{% endif %}" class="btn btn-secondary">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if message_type %}&type={{ message_type }}{% endif %}{% if status %}&status={{ status }}{% endif %}" class="btn btn-secondary">Last</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="no-data">
+            <p>No messages found.</p>
+            <a href="{% url 'scheduler:message_create' %}" class="btn btn-primary">Create First Message</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.message-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.filters-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filters-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.filter-group select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    min-width: 150px;
+}
+
+.messages-table-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.messages-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.messages-table th,
+.messages-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.messages-table th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.messages-table tr:hover {
+    background: var(--bg-accent);
+}
+
+.type-badge, .direction-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-badge.status-draft { background: #fff3e0; color: #f57c00; }
+.status-badge.status-sent { background: #e8f5e9; color: #388e3c; }
+.status-badge.status-delivered { background: #e3f2fd; color: #1976d2; }
+.status-badge.status-failed { background: #ffebee; color: #d32f2f; }
+
+.action-buttons {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.page-info {
+    padding: 0.5rem 1rem;
+    color: var(--text-muted);
+}
+
+.no-data {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.no-data p {
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock content %}

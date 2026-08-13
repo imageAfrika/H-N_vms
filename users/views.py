@@ -1,16 +1,64 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Client, Referral
+from .models import Client, Referral, Notification
+from scheduler.models import Appointment
 from visits.models import Visit
 from services.models import Service, Order, OrderItem, Payment
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Sum
+from datetime import date
+from django.http import JsonResponse
 
 
 def index(request):
-    """Home page"""
-    context = {}
+    """Home page dashboard"""
+    today = timezone.now().date()
+    
+    # Get today's stats
+    clients_today = Client.objects.filter(date_joined__date=today) if hasattr(Client, 'date_joined') else Client.objects.none()
+    visits_today = Visit.objects.filter(visit_time__date=today)
+    
+    # Get recent notifications
+    notifications = Notification.objects.filter(is_read=False).order_by('-created_at')[:10]
+    
+    # Get upcoming birthdays (next 7 days)
+    upcoming_birthdays = []
+    for client in Client.objects.exclude(date_of_birth=None):
+        if client.date_of_birth:
+            this_year_birthday = date(today.year, client.date_of_birth.month, client.date_of_birth.day)
+            if this_year_birthday >= today and (this_year_birthday - today).days <= 7:
+                upcoming_birthdays.append({
+                    'client': client,
+                    'days_until': (this_year_birthday - today).days,
+                    'birthday': this_year_birthday
+                })
+    
+    # Sort by days until birthday
+    upcoming_birthdays.sort(key=lambda x: x['days_until'])
+    
+    # Get recent clients
+    recent_clients = Client.objects.all().order_by('-id')[:5] if hasattr(Client, 'date_joined') else Client.objects.all()[:5]
+    
+    # Get upcoming appointments
+    upcoming_appointments = Appointment.objects.filter(
+        date__gte=today,
+        status='scheduled'
+    ).order_by('date', 'time')[:5]
+    
+    context = {
+        'clients_today': clients_today,
+        'visits_today': visits_today,
+        'notifications': notifications,
+        'upcoming_birthdays': upcoming_birthdays,
+        'recent_clients': recent_clients,
+        'total_clients': Client.objects.count(),
+        'total_services': Service.objects.count(),
+        'unread_notifications': Notification.objects.filter(is_read=False).count(),
+        'clients': Client.objects.all(),
+        'services': Service.objects.all(),
+        'upcoming_appointments': upcoming_appointments,
+    }
     return render(request, 'users/index.html', context)
 
 @login_required
@@ -120,3 +168,59 @@ from django.contrib.auth import logout
 def logout_view(request):
     logout(request)
     return render(request, 'registration/logged_out.html')  # Redirect to login page after logout
+
+
+@login_required
+def create_appointment(request):
+    """Create a new appointment via AJAX"""
+    if request.method == 'POST':
+        try:
+            client_id = request.POST.get('client')
+            service_id = request.POST.get('service')
+            appointment_date = request.POST.get('date')
+            appointment_time = request.POST.get('time')
+            notes = request.POST.get('notes', '')
+            
+            client = get_object_or_404(Client, id=client_id)
+            service = get_object_or_404(Service, id=service_id)
+            
+            from datetime import datetime, timedelta
+            appointment = Appointment.objects.create(
+                client=client,
+                service=service,
+                date=appointment_date,
+                time=appointment_time,
+                notes=notes,
+                status='scheduled'
+            )
+            
+            # Create default reminder
+            from scheduler.models import Reminder, ScheduleConfiguration
+            config = ScheduleConfiguration.get_config()
+            default_reminder_hours = config.reminder_default_hours
+            Reminder.objects.create(
+                appointment=appointment,
+                reminder_type='email',
+                remind_before=timedelta(hours=default_reminder_hours)
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Appointment scheduled successfully',
+                'appointment_id': appointment.id
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            }, status=400)
+    
+    return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+
+
+@login_required
+def appointment_list(request):
+    """Display all appointments"""
+    appointments = Appointment.objects.all().order_by('date', 'time')
+    context = {'appointments': appointments}
+    return render(request, 'users/appointment_list.html', context)
